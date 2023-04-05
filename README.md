@@ -12,20 +12,30 @@ To set up this project, follow these steps:
 git clone
 ```
 
-2. Install dependencies:
+2. Create ENV vars
+
+```
+
+ export DEVISE_JWT_SECRET_KEY=********
+ export DEVISE_SECRET_KEY=********
+ export DB_USER=********@***.com
+ export DB_PASSWORD='********'
+```
+
+3. Install dependencies:
 
 ```
 bundle install
 ```
 
-3. Configure database:
+4. Configure database:
 
 ```
 rails db:create
 rails db:migrate
 ```
 
-4. Start the server:
+5. Start the server:
 
 ```
 rails s
@@ -33,7 +43,7 @@ rails s
 
 ## Usage
 
-To use the API, you can send requests to the endpoints defined in config/routes.rb. For example, to create a new user, you can send a POST request to /users with the following JSON in the request body:
+To use the API, you can send requests to the endpoints defined in config/routes.rb. For example, to create a new user, you can send a POST request to /api/v1/users with the following JSON in the request body:
 
 ```
 {
