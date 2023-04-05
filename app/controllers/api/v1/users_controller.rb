@@ -7,7 +7,8 @@ module Api
       def create
         @user = User.new(user_params)
         if @user.save
-          render json: @user, status: :created
+          jwt = generate_jwt(@user)
+          render json: { user: @user, jwt: jwt }, status: :created
         else
           render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
         end
@@ -17,6 +18,10 @@ module Api
 
       def user_params
         params.require(:user).permit(:email, :password, :password_confirmation)
+      end
+
+      def generate_jwt(user)
+        JWT.encode({ user_id: user.id }, Rails.application.secrets.secret_key_base)
       end
     end
   end
