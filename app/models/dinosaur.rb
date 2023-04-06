@@ -20,7 +20,7 @@ class Dinosaur < ApplicationRecord
   # should be filterable on species
   scope :filter_by_species, ->(species) { where(species: species) }
   # should be filterable on diet
-  scope :filter_by_diet, ->(diet_type) { where(diet_type: diet_type) }
+  scope :filter_by_diet_type, ->(diet_type) { where(diet_type: diet_type) }
 
   after_create :increment_cage_num_dinosaurs
 
@@ -28,10 +28,14 @@ class Dinosaur < ApplicationRecord
 
   # To ensure that carnivores can only be in a cage with other dinosaurs of the same species
   def carnivores_same_species
-    if diet_type == :CARNIVORE.to_s && cage.dinosaurs.where(diet_type: :CARNIVORE,
-                                                            species: species).exists?
-      errors.add(:cage, 'Carnivores of the same species cannot be in the same cage')
+    print "\nquery.exists?",
+          Dinosaur.filter_by_diet_type(:CARNIVORE.to_s).filter_by_species(species.to_s).exists?
+
+    if diet_type == :CARNIVORE.to_s && Dinosaur.filter_by_diet_type(diet_type.to_s).filter_by_species(species.to_s).exists?
+      return
     end
+
+    errors.add(:cage, 'Carnivores of the diferent species cannot be in the same cage')
   end
 
   # To ensure that herbivores cannot be in the same cage as carnivores
@@ -43,10 +47,6 @@ class Dinosaur < ApplicationRecord
 
   # To ensure that herbivores cannot be in the same cage as carnivores
   def carnivores_different_cage
-    # print "\ndiet_type: ", :CARNIVORE.class.name
-    # print "\ndiet_type == :CARNIVORE: ", (diet_type == :CARNIVORE.to_s).inspect
-    # print "\nHERBIVORE exist: ", cage.dinosaurs.where(diet_type: :HERBIVORE).exists?.inspect
-    # print "\ncage.dinosaurs: ", cage.dinosaurs.inspect
     return unless diet_type == :CARNIVORE && cage.dinosaurs.where(diet_type: :HERBIVORE).exists?
 
     errors.add(:cage, 'Herbivores cannot be in the same cage as carnivores')
