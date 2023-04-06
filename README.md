@@ -35,10 +35,16 @@ rails db:create
 rails db:migrate
 ```
 
-5. Start the server:
+5. Test the project:
 
 ```
-rails s
+bin/rspec
+```
+
+6. Start the server:
+
+```
+bin/rails s
 ```
 
 ## Usage

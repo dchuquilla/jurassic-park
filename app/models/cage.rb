@@ -5,12 +5,13 @@ class Cage < ApplicationRecord
   # To ensure that each dinosaur is either an herbivore or a carnivore
   has_many :dinosaurs
 
-  enum power_status: {active: 0, down: 1}.freeze
+  enum power_status: %i[down active].freeze
 
-  validates :max_capacity, presence: true, numericality: { greater_than: 0 }
+  validates :capacity, presence: true, numericality: { greater_than: 0 }
   validates :power_status, presence: true
   validate :max_capacity
-  validate :power_down_on_dinosaurs_withn
+  validate :no_power_down_on_dinosaurs_withn
+  validate :no_move_dinosaurs_to_power_on_cage
 
   # should be filterable on power_status
   scope :filter_by_power_status, ->(status) { where(power_status: status) }
@@ -30,16 +31,16 @@ class Cage < ApplicationRecord
   end
 
   # To ensure that cages cannot be powered off if they contain dinosaurs
-  def power_down_on_dinosaurs_withn
-    return unless num_dinosaurs.zero?
+  def no_power_down_on_dinosaurs_withn
+    return if num_dinosaurs.zero?
 
-    errors.add(:capacity, 'Cages cannot be powered off if they contain dinosaurs')
+    errors.add(:power_status, 'Cages cannot be powered off if they contain dinosaurs')
   end
 
   # To ensure that dinosaurs cannot be moved into a cage that is powered down
   def no_move_dinosaurs_to_power_on_cage
-    return unless power_status == 'down'
+    return unless power_status == :down
 
-    errors.add(:capacity, 'Dinosaurs cannot be moved into a cage that is powered down')
+    errors.add(:power_status, 'Dinosaurs cannot be moved into a cage that is powered down')
   end
 end
