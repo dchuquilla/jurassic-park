@@ -9,7 +9,7 @@ To set up this project, follow these steps:
 1. Clone the repo:
 
 ```
-git clone
+git clone git@github.com:dchuquilla/jurassic-park.git
 ```
 
 2. Create ENV vars

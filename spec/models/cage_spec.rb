@@ -30,6 +30,7 @@ RSpec.describe Cage, type: :model do
     end
 
     it 'is invalid if the cage is at maximum capacity' do
+      create(:dinosaur, cage: cage)
       create_list(:dinosaur, 5, cage: cage)
       expect(cage).not_to be_valid
     end
